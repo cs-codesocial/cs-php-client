@@ -26,11 +26,14 @@ $codesocial = new CodeSocial($token);
 ```
 $codesocial = new CodeSocial($token,1);
 ```
-
+#Error Level - Notices
+```
+$codesocial = new CodeSocial($token,2);
+```
 
 You are ready to make API calls from now on, and you dont have to pass token on subsequent requests.
 
-ALL RESPONSES ARE RETURNED AS AN ARRAY.
+#All Responses are Arrays
 
 #Sample Usage
 GET /tasks
