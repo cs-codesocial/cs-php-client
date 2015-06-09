@@ -10,6 +10,7 @@ require "codesocial.php";
 And make an object which 1 required parameter, and 1 optional parameter.
 
 Required parameter : token
+
 Optional parameter : Error Level
 ```
 0  - No errors are shown. All errors are logged. - Production
