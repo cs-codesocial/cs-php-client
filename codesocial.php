@@ -1,10 +1,24 @@
 <?php
-
+/*
+| -------------------------------------------------------------------
+| PHP Api client for Codesocial REST API
+| -------------------------------------------------------------------
+| Simple, easy to use library to use Codesocial REST API
+|
+| For complete instructions on how to use the library,please check the readme file.
+| 
+|   Author  : Kishor Kurian aka Repulsor
+|   Contact : repulsorbhw (Skype)
+|
+|  “Any fool can write code that a computer can understand. Good programmers write code that humans can understand.”
+|   -Martin Fowler
+| -------------------------------------------------------------------
+*/
 class CodeSocial
 {
     //Store token and url to use through out the class.
     private $access_token;
-    private $apiurl = "http://167.114.158.94:4000/api/v1/";
+    private $apiurl = "http://DOMAINNAME.com/api/v1/";
     private $errortrigger; //production mode(0), Fatal(1), notice(2)
     
     public function __construct($token, $state = 0)//defaults to production mode. No error messages.
@@ -13,7 +27,6 @@ class CodeSocial
         $this->access_token = $token;
         $this->errortrigger = $state;
     }
-
     private function errorhandler($errormessage)
     {
         if ($this->errortrigger == 0)
@@ -32,8 +45,6 @@ class CodeSocial
             trigger_error($errormessage);
         }
     }
-
-
     //Curl function for GET and POST request
     private function Curl($endpoint, $type = "GET", $data = null)
     {
@@ -62,27 +73,25 @@ class CodeSocial
             $this->errorhandler(curl_error($ch));
             return false;
         } else
-        {
-            return ($response);
+        { //success - valid response. jscon_decode it.
+            return json_decode($response,TRUE);
         }
     }
-
 //GET End points. Returns array response
     public function GetBalance()
     {
         $curlresponse = $this->curl("/balance");
-        return json_decode($curlresponse, true);
+        return $curlresponse;
     }
     public function GetProducts()
     {
         $curlresponse = $this->curl("/products");
-        return json_decode($curlresponse, true);
-
+        return $curlresponse;
     }
     public function GetTasks()
     {
         $curlresponse = $this->curl("/tasks");
-        return json_decode($curlresponse, true);
+        return $curlresponse;
     }
     
     //CreateTask - Parameters are  id,destiation and quantity. Accesstoken is appended automagically.
@@ -94,7 +103,6 @@ class CodeSocial
             $this->errorhandler("CreateTask() Function invalid or missing parameters");
             return false;
         }
-
         //check if id and quantity are int and trigger an error if they arent.
         if (!is_int($id) || !is_int($quantity))
         {
@@ -106,19 +114,18 @@ class CodeSocial
             $data["id"] = $id;
             $data["quantity"] = $quantity;
         }
-        //destination - Can be array or string. No checks, since its 
+        //destination - Can be array or string. Error if its of another datatype 
         if(is_array($destination) || is_string($destination)){
         $data["destination"] = $destination;
         }
         else{
             $this->errorhandler("CreateTask() Destination is not of the expected data type");
         }
-        //append access_token
+        //append access_token to the array elements
         $data["token"] = $this->access_token;
         //Make the call
         $curlresponse = $this->curl("/tasks", "POST", json_encode($data));
         //return data as array 
-        return json_decode($curlresponse, true);
-
+        return $curlresponse;
     }
 }
